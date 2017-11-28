@@ -35,6 +35,7 @@ impl Spc {
         let file = try!(File::open(path));
         Spc::from_reader(BufReader::new(file))
     }
+
     pub fn from_reader<R: Read + Seek>(reader: R) -> Result<Spc> {
         let mut r = BinaryReader::new(reader);
 
