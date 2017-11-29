@@ -1,5 +1,5 @@
 use std::char;
-use std::io::{Result, Error, ErrorKind, Seek, SeekFrom, BufReader};
+use std::io::{Read, Result, Error, ErrorKind, Seek, SeekFrom, BufReader};
 use std::path::Path;
 use std::fs::File;
 use super::binary_reader::{ReadAll, BinaryRead, BinaryReader};
@@ -33,7 +33,11 @@ pub struct Spc {
 impl Spc {
     pub fn load<P: AsRef<Path>>(path: P) -> Result<Spc> {
         let file = try!(File::open(path));
-        let mut r = BinaryReader::new(BufReader::new(file));
+        Spc::from_reader(BufReader::new(file))
+    }
+
+    pub fn from_reader<R: Read + Seek>(reader: R) -> Result<Spc> {
+        let mut r = BinaryReader::new(reader);
 
         let mut header = [0; HEADER_LEN];
         try!(r.read_all(&mut header));
